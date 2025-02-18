@@ -1791,3 +1791,4 @@
 2025-07-23 02:53:37 fix merge conflicts
 2025-11-29 01:33:10 fix warnings
 2025-03-14 10:32:12 patch memory leak
+2025-02-18 13:02:59 better error handling
