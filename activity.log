@@ -724,3 +724,4 @@
 2025-08-11 15:02:33 fix UI alignment
 2025-03-29 13:06:49 optimize function
 2025-01-15 20:46:25 update configs for prod
+2025-02-23 18:28:46 better error handling
