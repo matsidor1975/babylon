@@ -279,7 +279,6 @@ func TestExponentiallyEventsEndEpochQueuedMessages(t *testing.T) {
 
 	var numDelMessages int = datagen.RandomInRange(r, 5, 25)
 	for i := 0; i < numDelMessages; i++ {
-		epochMsgs = k.GetCurrentEpochMsgs(ctx)
 		msgDel := types.NewMsgWrappedDelegate(
 			stakingtypes.NewMsgDelegate(
 				h.GenAccs[0].GetAddress().String(),
@@ -401,6 +400,4 @@ func TestEpochFailedMsg(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, newDescription.Moniker, valI.Description.Moniker, "should not be equal, the commission update should fail the entire msg and not write the context")
-
-	fmt.Println(len(events))
 }
