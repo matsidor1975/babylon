@@ -10,6 +10,8 @@ import (
 
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/spf13/cobra"
+	"github.com/syndtr/goleveldb/leveldb/filter"
+	"github.com/syndtr/goleveldb/leveldb/opt"
 	"golang.org/x/exp/maps"
 )
 
@@ -38,8 +40,12 @@ func OpenDB(dir string) (dbm.DB, error) {
 	directory := filepath.Dir(dir)
 	filename := filepath.Base(dir)
 
+	options := opt.Options{
+		BlockSize: 4 * 1024 * 1024 * 1024,
+		Filter:    filter.NewBloomFilter(10), // by default, goleveldb doesn't use a bloom filter.
+	}
 	name := strings.TrimSuffix(filename, ext)
-	db, err := dbm.NewGoLevelDB(name, directory, nil)
+	db, err := dbm.NewGoLevelDBWithOpts(name, directory, &options)
 	if err != nil {
 		return nil, err
 	}
