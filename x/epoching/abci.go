@@ -78,15 +78,30 @@ func EndBlocker(ctx context.Context, k keeper.Keeper) ([]abci.ValidatorUpdate, e
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	validatorSetUpdate := []abci.ValidatorUpdate{}
 
+	k.Logger(sdkCtx).Info(
+		"epoching EndBlocker",
+		"blk_height:", sdkCtx.BlockHeader().Height,
+	)
+
 	// if reaching an epoch boundary, then
 	epoch := k.GetEpoch(ctx)
 	if epoch.IsLastBlock(ctx) {
+		k.Logger(sdkCtx).Info(
+			"is last block",
+			"blk_height:", sdkCtx.BlockHeader().Height,
+			"blk_time:", sdkCtx.BlockHeader().Time.String(),
+		)
+
 		// finalise this epoch, i.e., record the current header and the Merkle root of all AppHashs in this epoch
 		if err := k.RecordLastHeaderTime(ctx); err != nil {
 			return nil, err
 		}
 		// get all msgs in the msg queue
 		queuedMsgs := k.GetCurrentEpochMsgs(ctx)
+		k.Logger(sdkCtx).Info(
+			"current_epoch_msgs",
+			"len", fmt.Sprintf("%d", len(queuedMsgs)),
+		)
 		// forward each msg in the msg queue to the right keeper
 		for _, msg := range queuedMsgs {
 			res, err := k.HandleQueuedMsg(ctx, msg)
@@ -95,6 +110,13 @@ func EndBlocker(ctx context.Context, k keeper.Keeper) ([]abci.ValidatorUpdate, e
 			// (e.g., self-delegate coins more than its balance, wrong coding of addresses, ...)
 			// honest validators will have consistent execution results on the queued messages
 			if err != nil {
+				k.Logger(sdkCtx).Info(
+					"queuedMsg-fail",
+					"msg", fmt.Sprintf("%+v", msg),
+					"response", fmt.Sprintf("%+v", res),
+					"error_msg", err.Error(),
+				)
+
 				// emit an event signalling the failed execution
 				err := sdkCtx.EventManager().EmitTypedEvent(
 					&types.EventHandleQueuedMsg{
@@ -111,8 +133,15 @@ func EndBlocker(ctx context.Context, k keeper.Keeper) ([]abci.ValidatorUpdate, e
 				// skip this failed msg
 				continue
 			}
+
+			k.Logger(sdkCtx).Info(
+				"queuedMsg-pass",
+				"events_len", fmt.Sprintf("%d", len(res.Events)),
+				"msg", fmt.Sprintf("%+v", msg),
+				"response", fmt.Sprintf("%+v", res),
+			)
 			// for each event, emit an wrapped event EventTypeHandleQueuedMsg, which attaches the original attributes plus the original event type, the epoch number, txid and msgid to the event here
-			for _, event := range res.Events {
+			for _, event := range res.Events { // replace by EmitEvents
 				err := sdkCtx.EventManager().EmitTypedEvent(
 					&types.EventHandleQueuedMsg{
 						OriginalEventType:  event.Type,

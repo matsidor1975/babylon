@@ -112,6 +112,17 @@ func (k Keeper) HandleQueuedMsg(goCtx context.Context, qMsg *types.QueuedMessage
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	res, err := k.runUnwrappedMsg(ctx, qMsg)
+	if err != nil {
+		k.Logger(ctx).Error(
+			"HandleQueuedMsg",
+			"error_msg", err.Error(),
+		)
+	}
+
+	k.Logger(ctx).Info(
+		"HandleQueuedMsg",
+		"response", fmt.Sprintf("%+v", res),
+	)
 
 	return sdk.WrapServiceResult(ctx, res, err)
 }
@@ -122,6 +133,11 @@ func (k Keeper) runUnwrappedMsg(ctx sdk.Context, qMsg *types.QueuedMessage) (pro
 	// record lifecycle for delegation
 	switch msg := qMsg.Msg.(type) {
 	case *types.QueuedMessage_MsgCreateValidator:
+		k.Logger(ctx).Info(
+			"runUnwrappedMsg",
+			"msgtype", "QueuedMessage_MsgCreateValidator",
+		)
+
 		res, err := k.stkMsgServer.CreateValidator(msgSvrCtx, msg.MsgCreateValidator)
 		if err != nil {
 			return res, err
@@ -145,6 +161,11 @@ func (k Keeper) runUnwrappedMsg(ctx sdk.Context, qMsg *types.QueuedMessage) (pro
 		return res, nil
 
 	case *types.QueuedMessage_MsgDelegate:
+		k.Logger(ctx).Info(
+			"runUnwrappedMsg",
+			"msgtype", "QueuedMessage_MsgDelegate",
+		)
+
 		res, err := k.stkMsgServer.Delegate(msgSvrCtx, msg.MsgDelegate)
 		if err != nil {
 			return nil, err
@@ -166,6 +187,11 @@ func (k Keeper) runUnwrappedMsg(ctx sdk.Context, qMsg *types.QueuedMessage) (pro
 		return res, nil
 
 	case *types.QueuedMessage_MsgUndelegate:
+		k.Logger(ctx).Info(
+			"runUnwrappedMsg",
+			"msgtype", "QueuedMessage_MsgUndelegate",
+		)
+
 		res, err := k.stkMsgServer.Undelegate(msgSvrCtx, msg.MsgUndelegate)
 		if err != nil {
 			return nil, err
@@ -185,6 +211,10 @@ func (k Keeper) runUnwrappedMsg(ctx sdk.Context, qMsg *types.QueuedMessage) (pro
 		return res, nil
 
 	case *types.QueuedMessage_MsgBeginRedelegate:
+		k.Logger(ctx).Info(
+			"runUnwrappedMsg",
+			"msgtype", "QueuedMessage_MsgBeginRedelegate",
+		)
 		res, err := k.stkMsgServer.BeginRedelegate(msgSvrCtx, msg.MsgBeginRedelegate)
 		if err != nil {
 			return nil, err
@@ -204,6 +234,10 @@ func (k Keeper) runUnwrappedMsg(ctx sdk.Context, qMsg *types.QueuedMessage) (pro
 		return res, nil
 
 	case *types.QueuedMessage_MsgCancelUnbondingDelegation:
+		k.Logger(ctx).Info(
+			"runUnwrappedMsg",
+			"msgtype", "QueuedMessage_MsgCancelUnbondingDelegation",
+		)
 		res, err := k.stkMsgServer.CancelUnbondingDelegation(msgSvrCtx, msg.MsgCancelUnbondingDelegation)
 		if err != nil {
 			return nil, err
@@ -222,6 +256,10 @@ func (k Keeper) runUnwrappedMsg(ctx sdk.Context, qMsg *types.QueuedMessage) (pro
 		return res, nil
 
 	case *types.QueuedMessage_MsgEditValidator:
+		k.Logger(ctx).Info(
+			"runUnwrappedMsg",
+			"msgtype", "QueuedMessage_MsgEditValidator",
+		)
 		res, err := k.stkMsgServer.EditValidator(msgSvrCtx, msg.MsgEditValidator)
 		if err != nil {
 			return res, err
@@ -230,6 +268,10 @@ func (k Keeper) runUnwrappedMsg(ctx sdk.Context, qMsg *types.QueuedMessage) (pro
 		return res, nil
 
 	case *types.QueuedMessage_MsgUpdateParams:
+		k.Logger(ctx).Info(
+			"runUnwrappedMsg",
+			"msgtype", "QueuedMessage_MsgUpdateParams",
+		)
 		res, err := k.stkMsgServer.UpdateParams(msgSvrCtx, msg.MsgUpdateParams)
 		if err != nil {
 			return res, err
