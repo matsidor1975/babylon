@@ -41,7 +41,7 @@ func OpenDB(dir string) (dbm.DB, error) {
 	filename := filepath.Base(dir)
 
 	options := opt.Options{
-		BlockSize: 4 * 1024 * 1024 * 1024,
+		BlockSize: 4 * 1024 * 1024,
 		Filter:    filter.NewBloomFilter(10), // by default, goleveldb doesn't use a bloom filter.
 	}
 	name := strings.TrimSuffix(filename, ext)
