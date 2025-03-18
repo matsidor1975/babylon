@@ -40,17 +40,11 @@ func OpenDB(dir string) (dbm.DB, error) {
 	filename := filepath.Base(dir)
 
 	options := &opt.Options{
-		BlockSize:              512 * 1024,            // Set block size to 512KB
-		WriteBuffer:            128 * 1024 * 1024,     // 128MB write buffer
-		Compression:            opt.SnappyCompression, // Keep Snappy enabled if disabling didn't help
-		OpenFilesCacheCapacity: 2048,                  // Increase open file limit
+		BlockSize:              2*1024*1024*1024 - 1, // Increase block size to 128KB
+		WriteBuffer:            1024 * 1024 * 1024,   // 64MB write buffer
+		Compression:            opt.NoCompression,    // ❌ Disable Snappy Compression
+		OpenFilesCacheCapacity: 10240,                // Increase open file limit
 	}
-	// options := &opt.Options{
-	// 	BlockSize:              128 * 1024,        // Increase block size to 128KB
-	// 	WriteBuffer:            64 * 1024 * 1024,  // 64MB write buffer
-	// 	Compression:            opt.NoCompression, // ❌ Disable Snappy Compression
-	// 	OpenFilesCacheCapacity: 1024,              // Increase open file limit
-	// }
 
 	name := strings.TrimSuffix(filename, ext)
 	db, err := dbm.NewGoLevelDBWithOpts(name, directory, options)
