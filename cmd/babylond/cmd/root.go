@@ -221,6 +221,7 @@ func initRootCmd(rootCmd *cobra.Command, txConfig client.TxEncodingConfig, basic
 		CreateBlsKeyCmd(),
 		ModuleSizeCmd(),
 		DebugCmd(),
+		NewRollbackCmd(newApp, app.DefaultNodeHome),
 		confixcmd.ConfigCommand(),
 	)
 
