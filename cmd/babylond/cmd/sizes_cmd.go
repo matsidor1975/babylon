@@ -10,7 +10,6 @@ import (
 
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/spf13/cobra"
-	"github.com/syndtr/goleveldb/leveldb/filter"
 	"github.com/syndtr/goleveldb/leveldb/opt"
 	"golang.org/x/exp/maps"
 )
@@ -40,15 +39,15 @@ func OpenDB(dir string) (dbm.DB, error) {
 	directory := filepath.Dir(dir)
 	filename := filepath.Base(dir)
 
-	options := opt.Options{
-		BlockSize:              40 * 1024 * 1024,
-		Filter:                 filter.NewBloomFilter(10), // by default, goleveldb doesn't use a bloom filter.
-		WriteBuffer:            671088640,
-		OpenFilesCacheCapacity: 100000,
-		Compression:            opt.NoCompression,
+	options := &opt.Options{
+		BlockSize:              128 * 1024,        // Increase block size to 128KB
+		WriteBuffer:            64 * 1024 * 1024,  // 64MB write buffer
+		Compression:            opt.NoCompression, // ❌ Disable Snappy Compression
+		OpenFilesCacheCapacity: 1024,              // Increase open file limit
 	}
+
 	name := strings.TrimSuffix(filename, ext)
-	db, err := dbm.NewGoLevelDBWithOpts(name, directory, &options)
+	db, err := dbm.NewGoLevelDBWithOpts(name, directory, options)
 	if err != nil {
 		return nil, err
 	}
