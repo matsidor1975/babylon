@@ -41,10 +41,11 @@ func OpenDB(dir string) (dbm.DB, error) {
 	filename := filepath.Base(dir)
 
 	options := opt.Options{
-		BlockSize:              4 * 1024 * 1024,
+		BlockSize:              40 * 1024 * 1024,
 		Filter:                 filter.NewBloomFilter(10), // by default, goleveldb doesn't use a bloom filter.
-		WriteBuffer:            67108864,
+		WriteBuffer:            671088640,
 		OpenFilesCacheCapacity: 100000,
+		Compression:            opt.NoCompression,
 	}
 	name := strings.TrimSuffix(filename, ext)
 	db, err := dbm.NewGoLevelDBWithOpts(name, directory, &options)
