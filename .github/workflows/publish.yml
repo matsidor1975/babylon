@@ -5,6 +5,8 @@ on:
     branches:
       - 'main'
       - 'release/v1.x'
+      - '*/*'
+      - '*'
     tags:
       - '*'
 
@@ -21,7 +23,6 @@ jobs:
 
   docker_pipeline:
     uses: babylonlabs-io/.github/.github/workflows/reusable_docker_pipeline.yml@v0.10.2
-    needs: ["lint_test"]
     secrets: inherit
     permissions:
       # required for all workflows
