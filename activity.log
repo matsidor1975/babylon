@@ -1012,3 +1012,4 @@
 2025-08-21 03:14:05 fix crash issue
 2025-09-10 06:31:03 remove deprecated code
 2025-06-09 10:02:29 small refactor
+2025-05-02 15:09:56 patch memory leak
