@@ -799,3 +799,4 @@
 2025-07-29 22:55:11 remove unused import
 2025-03-22 20:37:13 update CI pipeline
 2025-05-16 06:15:54 update docs with examples
+2025-06-01 19:20:06 simplify logic
