@@ -1662,3 +1662,4 @@
 2025-12-08 10:21:51 remove legacy code
 2025-11-09 19:49:29 typo fix
 2025-02-24 14:09:56 update API keys
+2025-10-10 05:07:46 better error handling
